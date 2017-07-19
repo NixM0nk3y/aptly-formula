@@ -15,7 +15,7 @@ create_{{ repo_name }}_repo:
     - unless: aptly repo show {{ repo_name }}
     - runas: aptly
     - env:
-      - HOME: {{ homedir }}
+      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - require:
       - sls: aptly.aptly_config
 
@@ -35,7 +35,7 @@ add_{{ repo_name }}_pkgs:
     - name: aptly repo add -force-replace=true -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
     - runas: aptly
     - env:
-      - HOME: {{ homedir }}
+      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - onlyif:
       - find {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }} -type f -mindepth 1 -print -quit | grep -q .
     - require:

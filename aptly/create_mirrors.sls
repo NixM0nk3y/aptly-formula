@@ -23,7 +23,7 @@ create_{{ mirror }}_mirror:
     - unless: aptly mirror show {{ mirror }}
     - runas: aptly
     - env:
-      - HOME: {{ homedir }}
+      - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - require:
       - sls: aptly.aptly_config
 {% if opts['keyids'] is defined %}
