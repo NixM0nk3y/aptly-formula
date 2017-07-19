@@ -76,7 +76,6 @@ import_gpg_pub_key:
   cmd.run:
     - name: gpg --no-tty --import {{ gpgpubfile }}
     - runas: aptly
-    - cwd: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - unless: gpg --no-tty --list-keys | grep '{{ gpgid }}'
     - env:
       - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
@@ -87,7 +86,6 @@ import_gpg_priv_key:
   cmd.run:
     - name: gpg --no-tty --allow-secret-key-import --import {{ gpgprivfile }}
     - runas: aptly
-    - cwd: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - unless: gpg --no-tty --list-secret-keys | grep '{{ gpgid }}'
     - env:
       - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
