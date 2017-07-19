@@ -34,7 +34,6 @@ add_{{ repo_name }}_pkgs:
   cmd.run:
     - name: aptly repo add -force-replace=true -remove-files=true {{ repo_name }} {{ opts['pkgdir'] }}/{{ distribution }}/{{ component }}
     - runas: aptly
-    - python_shell: True
     - env:
       - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - onlyif:
