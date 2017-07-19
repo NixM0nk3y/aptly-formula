@@ -22,6 +22,7 @@ create_{{ mirror }}_mirror:
     - name: {{ create_mirror_cmd }}
     - unless: aptly mirror show {{ mirror }}
     - runas: aptly
+    - cwd: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - env:
       - HOME: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - require:
@@ -36,6 +37,7 @@ add_{{ mirrorloop }}_{{keyid}}_gpg_key:
   cmd.run:
     - name: gpg --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{keyid}}
     - runas: aptly
+    - cwd: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - unless: gpg --list-keys --keyring {{ keyring }}  | grep {{keyid}}
 {% endfor %}
   {% elif opts['keyid'] is defined %}
@@ -45,6 +47,7 @@ add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: gpg --no-default-keyring --keyring {{ keyring }} --keyserver {{ opts['keyserver']|default('keys.gnupg.net') }} --recv-keys {{ opts['keyid'] }}
     - runas: aptly
+    - cwd: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - unless: gpg --list-keys --keyring {{ keyring }}  | grep {{ opts['keyid'] }}
   {% elif opts['key_url'] is defined %}
       - cmd: add_{{ mirror }}_gpg_key
@@ -53,6 +56,7 @@ add_{{ mirror }}_gpg_key:
   cmd.run:
     - name: gpg --no-default-keyring --keyring {{ keyring }} --fetch-keys {{ opts['key_url'] }}
     - runas: aptly
+    - cwd: {{ salt['pillar.get']('aptly:homedir', '/var/lib/aptly') }}
     - unless: gpg --list-keys --keyring {{ keyring }}  | grep {{keyid}}
   {% endif %}
 {% endfor %}
